@@ -1,5 +1,6 @@
 const express = require("express")
 const apiRouter = require("./routes")
+const db = require("./lib/db")
 const app = express()
 
 // Settings
@@ -12,9 +13,17 @@ app.use(express.json())
 apiRouter(app)
 
 app.get("/", (req, res) => {
+	console.log(process.env)
 	res.send("Hola koders")
 })
 
 app.listen(port, () => {
 	console.log(`server on running on ${port}`)
+	db.connect()
+		.then(() => {
+			console.log("DB connected")
+		})
+		.catch((err) => {
+			console.log("Connection refused", err)
+		})
 })
