@@ -1,65 +1,75 @@
 const express = require("express")
-
+const categoryModel = require("../usecases/categories")
 const router = express.Router()
 
-router.get("/", (req, res) => {
-	res.status(200).json({
-		ok: true,
-		payload: [
-			{
-				name: "jardin",
-				id: 1
-			},
-			{
-				name: "hogar",
-				id: 2
-			}
-		]
-	})
+router.get("/", async (req, res, next) => {
+	try {
+		const categories = await categoryModel.read()
+		res.status(200).json({
+			ok: true,
+			msg: "All categories",
+			payload: categories
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res, next) => {
 	const { id } = req.params
-	res.status(200).json({
-		ok: true,
-		payload: {
-			id,
-			category: "jardin"
-		}
-	})
+	try {
+		const categoryId = await categoryModel.getById(id)
+		res.status(200).json({
+			ok: true,
+			msg: "Category",
+			payload: categoryId
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res, next) => {
 	const { categoryData } = req.body
-	res.status(201).json({
-		ok: true,
-		data: categoryData
-	})
+	try {
+		const newCategory = await categoryModel.create(categoryData)
+		res.status(201).json({
+			ok: true,
+			msg: "Category created",
+			payload: newCategory
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id", async (req, res, next) => {
 	const { id } = req.params
 	const { categoryUpdateData } = req.body
-	res.status(201).json({
-		ok: true,
-		payload: {
-			id,
-			categoryUpdateData
-		}
-	})
+	try {
+		const updatedCategory = await categoryModel.update(id, categoryUpdateData)
+		res.status(201).json({
+			ok: true,
+			msg: "Updated successfuly",
+			payload: updatedCategory
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res, next) => {
 	const { id } = req.params
-	res.status(200).json({
-		ok: true,
-		payload: {
-			id,
-			categoryDelete: {
-				name: "Jardin"
-			}
-		}
-	})
+	try {
+		const deletedCategory = await categoryModel.del(id)
+		res.status(200).json({
+			ok: true,
+			msg: "Deleted successfuly",
+			payload: deletedCategory
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
 module.exports = router

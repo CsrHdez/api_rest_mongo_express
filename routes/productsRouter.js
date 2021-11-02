@@ -1,64 +1,85 @@
 const express = require("express")
+const productsModel = require("../usecases/products")
 const router = express.Router()
 
-router.get("/", (req, res) => {
-	res.json({
-		ok: true,
-		payload: [
-			{
-				name: "cesar",
-				lastName: "Hernandex"
-			},
-			{
-				name: "Javier",
-				lastName: "Bautista"
+router.get("/", async (req, res, next) => {
+	try {
+		const products = await productsModel.read()
+		res.status(200).json({
+			ok: true,
+			msg: "Done!",
+			payload: {
+				products
 			}
-		]
-	})
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res, next) => {
 	const { id } = req.params
-	res.json({
-		ok: true,
-		payload: {
-			id
-		}
-	})
+	try {
+		const product = await productsModel.getById(id)
+		res.status(200).json({
+			ok: true,
+			msg: "Done!",
+			payload: {
+				product
+			}
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res, next) => {
 	const { productData } = req.body
-	res.json({
-		ok: true,
-		payload: productData
-	})
+	try {
+		const newProduct = await productsModel.create(productData)
+		res.status(201).json({
+			ok: true,
+			msg: "Done!",
+			payload: {
+				product: newProduct
+			}
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id", async (req, res, next) => {
 	const { id } = req.params
 	const { productUpdateData } = req.body
-	res.status(201).json({
-		ok: true,
-		payload: {
-			id,
-			payload: productUpdateData
-		}
-	})
+	try {
+		const updateProduct = await productsModel.update(id, productUpdateData)
+		res.status(201).json({
+			ok: true,
+			msg: "Done!",
+			payload: {
+				product: updateProduct
+			}
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res, next) => {
 	const { id } = req.params
-	res.status(200).json({
-		ok: true,
-		payload: {
-			id,
-			deleteProduct: {
-				name: "Product 1",
-				price: 1200
+	try {
+		const deleteProduct = await productsModel.del(id)
+		res.status(204).json({
+			ok: true,
+			msg: "Done!",
+			payload: {
+				product: deleteProduct
 			}
-		}
-	})
+		})
+	} catch (err) {
+		next(err)
+	}
 })
 
 module.exports = router

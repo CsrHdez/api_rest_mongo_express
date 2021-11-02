@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Schema = mongoose.Schema()
+const Schema = mongoose.Schema
 
 const schema = new Schema({
 	name: {
@@ -28,11 +28,11 @@ const schema = new Schema({
 		type: String,
 		required: true,
 		trim: true,
-		minlength: 20
+		minlength: 8
 	}
 })
 
 module.exports = {
-	model: moongose.model("Users", schema),
+	model: mongoose.model("Users", schema),
 	schema
 }
