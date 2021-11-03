@@ -1,24 +1,24 @@
 const Category = require("../../models/categoryModel").model
 
-const create = (dataCategory) => {
+const create = async (dataCategory) => {
 	const newCategory = new Category(dataCategory)
 	
 	return await newCategory.save()
 }
 
-const read = () => {
+const read = async () => {
 	return await Category.find({}).exec()
 }
 
-const getById = (idCategory) => {
+const getById = async idCategory => {
 	return await Category.findById(idCategory).exec()
 }
 
-const update = (idCategory, dataCategory) => {
+const update = async (idCategory, dataCategory) => {
 	return await Category.findByIdAndUpdate(idCategory, dataCategory)
 }
 
-const del = (idCategory) => {
+const del = async idCategory => {
 	return await Category.findByIdAndDelete(idCategory)
 }
 

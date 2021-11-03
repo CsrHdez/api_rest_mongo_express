@@ -1,5 +1,6 @@
 const express = require("express")
 const usersModel = require("../usecases/users/")
+const bcryptPass = require("../lib/bcrypt/password")
 
 const router = express.Router()
 
@@ -35,6 +36,8 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
 	const { userData } = req.body
+	const { password } = userData
+	userData.password = bcryptPass.hashPass(password)
 	try {
 		const newUser = await usersModel.create(userData)
 		res.status(201).json({
